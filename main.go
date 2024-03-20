@@ -6,9 +6,13 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"myapp/common"
 	productcontroller "myapp/module/product/controller"
 	productusecase "myapp/module/product/domain/usecase"
 	productmysql "myapp/module/product/repository/mysql"
+	"myapp/module/user/infras/httpservice"
+	"myapp/module/user/infras/repository"
+	userusecase "myapp/module/user/usecase"
 	"net/http"
 	"os"
 )
@@ -42,5 +46,7 @@ func main() {
 		}
 	}
 
+	userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{})
+	httpservice.NewUserService(userUC).Routes(v1)
 	r.Run(":3000")
 }
