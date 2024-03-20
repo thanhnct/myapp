@@ -7,14 +7,24 @@ import (
 	userdomain "myapp/module/user/domain"
 )
 
-func (uc useCase) Register(ctx context.Context, registerDto EmailPasswordRegistrationDTO) error {
+type registerUC struct {
+	userQueryRepo UserQueryRepository
+	userCmdRepo   UserCommandRepository
+	hasher        Hasher
+}
+
+func NewRegisterUC(userQueryRepo UserQueryRepository, userCmdRepo UserCommandRepository, hasher Hasher) *registerUC {
+	return &registerUC{userQueryRepo: userQueryRepo, userCmdRepo: userCmdRepo, hasher: hasher}
+}
+
+func (uc *registerUC) Register(ctx context.Context, registerDto EmailPasswordRegistrationDTO) error {
 	// 1. Find user by email:
 	// 1.1 Found: return error (email has existed)
 	// 2. Generate salt
 	// 3. Hash password+salt
 	// 4. Create user entity
 
-	user, err := uc.repo.FindByEmail(ctx, registerDto.Email)
+	user, err := uc.userQueryRepo.FindByEmail(ctx, registerDto.Email)
 
 	if user != nil {
 		return userdomain.ErrEmailHasExisted
@@ -50,7 +60,7 @@ func (uc useCase) Register(ctx context.Context, registerDto EmailPasswordRegistr
 		return err
 	}
 
-	if err := uc.repo.Create(ctx, userEntity); err != nil {
+	if err := uc.userCmdRepo.Create(ctx, userEntity); err != nil {
 		return err
 	}
 

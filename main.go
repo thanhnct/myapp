@@ -6,13 +6,12 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
-	"myapp/common"
+	"myapp/builder"
 	"myapp/component"
 	productcontroller "myapp/module/product/controller"
 	productusecase "myapp/module/product/domain/usecase"
 	productmysql "myapp/module/product/repository/mysql"
 	"myapp/module/user/infras/httpservice"
-	"myapp/module/user/infras/repository"
 	userusecase "myapp/module/user/usecase"
 	"net/http"
 	"os"
@@ -24,6 +23,8 @@ func main() {
 	dsn := os.Getenv("DB_DSN")
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	db = db.Debug()
 
 	if err != nil {
 		log.Fatalln(err)
@@ -46,8 +47,10 @@ func main() {
 			products.POST("", api.CreateProductAPI(db))
 		}
 	}
-	tokenProvider := component.NewJWTProvider("very-important-please-change-it", 60*60*24*7, 60*60*24*14)
-	userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
-	httpservice.NewUserService(userUC).Routes(v1)
+	jwtSecret := os.Getenv("JWT_SECRET")
+	tokenProvider := component.NewJWTProvider(jwtSecret, 60*60*24*7, 60*60*24*14)
+	//userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
+	userUseCase := userusecase.UseCaseWithBuilder(builder.NewComplexBuilder(builder.NewSimpleBuilder(db, tokenProvider)))
+	httpservice.NewUserService(userUseCase).Routes(v1)
 	r.Run(":3000")
 }

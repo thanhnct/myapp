@@ -7,8 +7,26 @@ import (
 	"time"
 )
 
-func (uc useCase) LoginEmailPassword(ctx context.Context, dto EmailPasswordLoginDTO) (*TokenResponseDTO, error) {
-	user, err := uc.repo.FindByEmail(ctx, dto.Email)
+type TokenProvider interface {
+	IssueToken(ctx context.Context, id, sub string) (token string, err error)
+	TokenExpireInSeconds() int
+	RefreshExpireInSeconds() int
+}
+
+type loginEmailPasswordUC struct {
+	userRepo      UserQueryRepository
+	sessionRepo   SessionCommandRepository
+	tokenProvider TokenProvider
+	hasher        Hasher
+}
+
+func NewLoginEmailPasswordUC(userRepo UserQueryRepository, sessionRepo SessionCommandRepository,
+	tokenProvider TokenProvider, hasher Hasher) *loginEmailPasswordUC {
+	return &loginEmailPasswordUC{userRepo: userRepo, sessionRepo: sessionRepo, tokenProvider: tokenProvider, hasher: hasher}
+}
+
+func (uc *loginEmailPasswordUC) LoginEmailPassword(ctx context.Context, dto EmailPasswordLoginDTO) (*TokenResponseDTO, error) {
+	user, err := uc.userRepo.FindByEmail(ctx, dto.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +53,7 @@ func (uc useCase) LoginEmailPassword(ctx context.Context, dto EmailPasswordLogin
 	session := userdomain.NewSession(sessionId, userId, refreshToken, tokenExpAt, refreshExpAt)
 
 	//Save session to db
-	if err := uc.sessionRepository.Create(ctx, session); err != nil {
+	if err := uc.sessionRepo.Create(ctx, session); err != nil {
 		return nil, err
 	}
 
