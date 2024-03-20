@@ -18,6 +18,10 @@ func (mockHasher) HashPassword(salt, password string) (string, error) {
 	return "abcdefgfasd", nil
 }
 
+func (mockHasher) CompareHashPassword(hashedPassword, salt, password string) bool {
+	return true
+}
+
 type mockUserRepo struct {
 }
 
@@ -37,8 +41,28 @@ func (mockUserRepo) Create(ctx context.Context, data *userdomain.User) error {
 	return nil
 }
 
+type mockTokenProvider struct {
+}
+
+func (mockTokenProvider) IssueToken(ctx context.Context, id, sub string) (token string, err error) {
+	return "", nil
+}
+func (mockTokenProvider) TokenExpireInSeconds() int {
+	return 0
+}
+func (mockTokenProvider) RefreshExpireInSeconds() int {
+	return 0
+}
+
+type mockSessionRepo struct {
+}
+
+func (mockSessionRepo) Create(ctx context.Context, data *userdomain.Session) error {
+	return nil
+}
+
 func TestUseCase_Register(t *testing.T) {
-	uc := NewUserUseCase(mockUserRepo{}, mockHasher{})
+	uc := NewUserUseCase(mockUserRepo{}, mockHasher{}, mockTokenProvider{}, mockSessionRepo{})
 
 	type testData struct {
 		Input    EmailPasswordRegistrationDTO

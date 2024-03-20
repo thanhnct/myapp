@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"myapp/common"
+	"myapp/component"
 	productcontroller "myapp/module/product/controller"
 	productusecase "myapp/module/product/domain/usecase"
 	productmysql "myapp/module/product/repository/mysql"
@@ -45,8 +46,8 @@ func main() {
 			products.POST("", api.CreateProductAPI(db))
 		}
 	}
-
-	userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{})
+	tokenProvider := component.NewJWTProvider("very-important-please-change-it", 60*60*24*7, 60*60*24*14)
+	userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
 	httpservice.NewUserService(userUC).Routes(v1)
 	r.Run(":3000")
 }
