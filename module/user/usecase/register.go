@@ -3,6 +3,7 @@ package userusecase
 import (
 	"context"
 	"github.com/pkg/errors"
+	"github.com/viettranx/service-context/core"
 	"myapp/common"
 	userdomain "myapp/module/user/domain"
 )
@@ -27,11 +28,11 @@ func (uc *registerUC) Register(ctx context.Context, registerDto EmailPasswordReg
 	user, err := uc.userQueryRepo.FindByEmail(ctx, registerDto.Email)
 
 	if user != nil {
-		return userdomain.ErrEmailHasExisted
+		return core.ErrBadRequest.WithError(userdomain.ErrEmailHasExisted.Error())
 	}
 
 	if err != nil && !errors.Is(err, common.ErrRecordNotFound) {
-		return err
+		return core.ErrInternalServerError.WithError("can not register right now").WithDebug(err.Error())
 	}
 
 	salt, err := uc.hasher.RandomStr(30)

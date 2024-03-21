@@ -35,6 +35,8 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(middleware.Recovery())
+
 	jwtSecret := os.Getenv("JWT_SECRET")
 	tokenProvider := component.NewJWTProvider(jwtSecret, 60*60*24*7, 60*60*24*14)
 
