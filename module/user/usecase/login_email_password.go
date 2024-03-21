@@ -7,12 +7,6 @@ import (
 	"time"
 )
 
-type TokenProvider interface {
-	IssueToken(ctx context.Context, id, sub string) (token string, err error)
-	TokenExpireInSeconds() int
-	RefreshExpireInSeconds() int
-}
-
 type loginEmailPasswordUC struct {
 	userRepo      UserQueryRepository
 	sessionRepo   SessionCommandRepository

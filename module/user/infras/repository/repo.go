@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 	"myapp/common"
@@ -22,6 +23,20 @@ func (repo userMySQLRepo) FindByEmail(ctx context.Context, email string) (*userd
 	var dto UserDTO
 
 	if err := repo.db.Table(TbName).Where("email = ?", email).First(&dto).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, common.ErrRecordNotFound
+		}
+
+		return nil, err
+	}
+
+	return dto.ToEntity()
+}
+
+func (repo userMySQLRepo) Find(ctx context.Context, id uuid.UUID) (*userdomain.User, error) {
+	var dto UserDTO
+
+	if err := repo.db.Table(TbName).Where("id = ?", id).First(&dto).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, common.ErrRecordNotFound
 		}

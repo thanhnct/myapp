@@ -1,10 +1,8 @@
 package builder
 
 import (
-	"context"
 	"gorm.io/gorm"
 	"myapp/common"
-	userdomain "myapp/module/user/domain"
 	"myapp/module/user/infras/repository"
 	userusecase "myapp/module/user/usecase"
 )
@@ -42,6 +40,10 @@ func (s simpleBuilder) BuildSessionCmdRepo() userusecase.SessionCommandRepositor
 	return repository.NewSessionMySQLRepo(s.db)
 }
 
+func (s simpleBuilder) BuildSessionRepo() userusecase.SessionRepository {
+	return repository.NewSessionMySQLRepo(s.db)
+}
+
 // Complex builder
 
 func NewComplexBuilder(simpleBuilder simpleBuilder) complexBuilder {
@@ -53,30 +55,30 @@ type complexBuilder struct {
 }
 
 // Proxy design pattern
-type userCacheRepo struct {
-	realRepo userusecase.UserQueryRepository
-	cache    map[string]*userdomain.User
-}
-
-func (c userCacheRepo) FindByEmail(ctx context.Context, email string) (*userdomain.User, error) {
-	if user, ok := c.cache[email]; ok {
-		return user, nil
-	}
-
-	user, err := c.realRepo.FindByEmail(ctx, email)
-
-	if err != nil {
-		return nil, err
-	}
-
-	c.cache[email] = user
-
-	return user, nil
-}
-
-func (cb complexBuilder) BuildUserQueryRepo() userusecase.UserQueryRepository {
-	return userCacheRepo{
-		realRepo: cb.simpleBuilder.BuildUserQueryRepo(),
-		cache:    make(map[string]*userdomain.User),
-	}
-}
+//type userCacheRepo struct {
+//	realRepo userusecase.UserQueryRepository
+//	cache    map[string]*userdomain.User
+//}
+//
+//func (c userCacheRepo) FindByEmail(ctx context.Context, email string) (*userdomain.User, error) {
+//	if user, ok := c.cache[email]; ok {
+//		return user, nil
+//	}
+//
+//	user, err := c.realRepo.FindByEmail(ctx, email)
+//
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	c.cache[email] = user
+//
+//	return user, nil
+//}
+//
+//func (cb complexBuilder) BuildUserQueryRepo() userusecase.UserQueryRepository {
+//	return userCacheRepo{
+//		realRepo: cb.simpleBuilder.BuildUserQueryRepo(),
+//		cache:    make(map[string]*userdomain.User),
+//	}
+//}
