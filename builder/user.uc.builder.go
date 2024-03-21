@@ -40,10 +40,6 @@ func (s simpleBuilder) BuildSessionCmdRepo() userusecase.SessionCommandRepositor
 	return repository.NewSessionMySQLRepo(s.db)
 }
 
-func (s simpleBuilder) BuildSessionRepo() userusecase.SessionRepository {
-	return repository.NewSessionMySQLRepo(s.db)
-}
-
 // Complex builder
 
 func NewComplexBuilder(simpleBuilder simpleBuilder) complexBuilder {

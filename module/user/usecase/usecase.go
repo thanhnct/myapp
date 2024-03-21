@@ -37,14 +37,13 @@ type Builder interface {
 	BuildTokenProvider() TokenProvider
 	BuildSessionQueryRepo() SessionQueryRepository
 	BuildSessionCmdRepo() SessionCommandRepository
-	BuildSessionRepo() SessionRepository
 }
 
 func UseCaseWithBuilder(b Builder) UseCase {
 	return &useCase{
 		registerUC:           NewRegisterUC(b.BuildUserQueryRepo(), b.BuildUserCmdRepo(), b.BuildHasher()),
 		loginEmailPasswordUC: NewLoginEmailPasswordUC(b.BuildUserQueryRepo(), b.BuildSessionCmdRepo(), b.BuildTokenProvider(), b.BuildHasher()),
-		refreshTokenUC:       NewRefreshTokenPasswordUC(b.BuildUserQueryRepo(), b.BuildSessionRepo(), b.BuildTokenProvider(), b.BuildHasher()),
+		refreshTokenUC:       NewRefreshTokenPasswordUC(b.BuildUserQueryRepo(), b.BuildSessionQueryRepo(), b.BuildTokenProvider(), b.BuildHasher(), b.BuildSessionCmdRepo()),
 	}
 }
 

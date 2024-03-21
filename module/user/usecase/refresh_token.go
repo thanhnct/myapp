@@ -9,19 +9,20 @@ import (
 )
 
 type refreshTokenUC struct {
-	userRepo      UserQueryRepository
-	sessionRepo   SessionRepository
-	tokenProvider TokenProvider
-	hasher        Hasher
+	userRepo           UserQueryRepository
+	sessionQueryRepo   SessionQueryRepository
+	sessionCommandRepo SessionCommandRepository
+	tokenProvider      TokenProvider
+	hasher             Hasher
 }
 
-func NewRefreshTokenPasswordUC(userRepo UserQueryRepository, sessionRepo SessionRepository,
-	tokenProvider TokenProvider, hasher Hasher) *refreshTokenUC {
-	return &refreshTokenUC{userRepo: userRepo, sessionRepo: sessionRepo, tokenProvider: tokenProvider, hasher: hasher}
+func NewRefreshTokenPasswordUC(userRepo UserQueryRepository, sessionQueryRepo SessionQueryRepository,
+	tokenProvider TokenProvider, hasher Hasher, sessionCommandRepo SessionCommandRepository) *refreshTokenUC {
+	return &refreshTokenUC{userRepo: userRepo, sessionQueryRepo: sessionQueryRepo, sessionCommandRepo: sessionCommandRepo, tokenProvider: tokenProvider, hasher: hasher}
 }
 
 func (uc *refreshTokenUC) RefreshToken(ctx context.Context, refreshToken string) (*TokenResponseDTO, error) {
-	session, err := uc.sessionRepo.FindByRefreshToken(ctx, refreshToken)
+	session, err := uc.sessionQueryRepo.FindByRefreshToken(ctx, refreshToken)
 
 	if err != nil {
 		return nil, err
@@ -58,12 +59,12 @@ func (uc *refreshTokenUC) RefreshToken(ctx context.Context, refreshToken string)
 
 	newSession := userdomain.NewSession(sessionId, userId, newRefreshToken, tokenExpAt, refreshExpAt)
 
-	if err := uc.sessionRepo.Create(ctx, newSession); err != nil {
+	if err := uc.sessionCommandRepo.Create(ctx, newSession); err != nil {
 		return nil, err
 	}
 
 	go func() {
-		_ = uc.sessionRepo.Delete(ctx, session.Id())
+		_ = uc.sessionCommandRepo.Delete(ctx, session.Id())
 	}()
 
 	// 5. Return token response dto
