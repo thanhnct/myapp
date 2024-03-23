@@ -1,6 +1,14 @@
 package common
 
+import "gorm.io/gorm"
+
 var (
-	Activated    string = "activated"
-	KeyRequester string = "requester"
+	Activated    = "activated"
+	KeyRequester = "requester"
+	KeyGorm      = "gorm"
+	KeyJWT       = "jwt"
 )
+
+type DbContext interface {
+	GetDB() *gorm.DB
+}

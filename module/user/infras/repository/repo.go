@@ -2,11 +2,12 @@ package repository
 
 import (
 	"context"
+	"myapp/common"
+	userdomain "myapp/module/user/domain"
+
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
-	"myapp/common"
-	userdomain "myapp/module/user/domain"
 )
 
 const TbName = "users"
@@ -56,6 +57,7 @@ func (repo userMySQLRepo) Create(ctx context.Context, data *userdomain.User) err
 		Password:  data.Password(),
 		Salt:      data.Salt(),
 		Role:      data.Role().String(),
+		Status:    data.Status(),
 	}
 
 	if err := repo.db.Table(TbName).Create(&dto).Error; err != nil {

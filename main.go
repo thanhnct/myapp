@@ -1,10 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"myapp/builder"
 	"myapp/common"
@@ -17,28 +13,40 @@ import (
 	"myapp/module/user/infras/repository"
 	userusecase "myapp/module/user/usecase"
 	"net/http"
-	"os"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	sctx "github.com/viettranx/service-context"
+	"github.com/viettranx/service-context/component/gormc"
 )
 
+func newService() sctx.ServiceContext {
+	return sctx.NewServiceContext(
+		sctx.WithName("G11"),
+		sctx.WithComponent(gormc.NewGormDB(common.KeyGorm, "")),
+		sctx.WithComponent(component.NewJWT(common.KeyJWT)),
+	)
+}
+
 func main() {
-	fmt.Println("Hello world!")
-
-	dsn := os.Getenv("DB_DSN")
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
-	db = db.Debug()
-
+	err := godotenv.Load()
 	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	serviceCtx := newService()
+
+	if err := serviceCtx.Load(); err != nil {
 		log.Fatalln(err)
 	}
+
+	db := serviceCtx.MustGet(common.KeyGorm).(common.DbContext).GetDB()
 
 	r := gin.Default()
 
 	r.Use(middleware.Recovery())
 
-	jwtSecret := os.Getenv("JWT_SECRET")
-	tokenProvider := component.NewJWTProvider(jwtSecret, 60*60*24*7, 60*60*24*14)
+	tokenProvider := serviceCtx.MustGet(common.KeyJWT).(component.TokenProvider)
 
 	authClient := userusecase.NewIntrospectUC(repository.NewUserRepo(db), repository.NewSessionMySQLRepo(db), tokenProvider)
 
@@ -81,6 +89,6 @@ func main() {
 
 	//userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
 	userUseCase := userusecase.UseCaseWithBuilder(builder.NewComplexBuilder(builder.NewSimpleBuilder(db, tokenProvider)))
-	httpservice.NewUserService(userUseCase).Routes(v1)
+	httpservice.NewUserService(userUseCase, serviceCtx).Routes(v1)
 	r.Run(":3000")
 }

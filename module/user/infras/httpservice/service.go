@@ -1,19 +1,22 @@
 package httpservice
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/viettranx/service-context/core"
 	"myapp/common"
 	userusecase "myapp/module/user/usecase"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	sctx "github.com/viettranx/service-context"
+	"github.com/viettranx/service-context/core"
 )
 
 type service struct {
-	uc userusecase.UseCase
+	uc   userusecase.UseCase
+	sctx sctx.ServiceContext
 }
 
-func NewUserService(uc userusecase.UseCase) service {
-	return service{uc: uc}
+func NewUserService(uc userusecase.UseCase, sctx sctx.ServiceContext) service {
+	return service{uc: uc, sctx: sctx}
 }
 
 func (s service) handleRegister() gin.HandlerFunc {

@@ -2,10 +2,11 @@ package userusecase
 
 import (
 	"context"
-	"github.com/pkg/errors"
-	"github.com/viettranx/service-context/core"
 	"myapp/common"
 	userdomain "myapp/module/user/domain"
+
+	"github.com/pkg/errors"
+	"github.com/viettranx/service-context/core"
 )
 
 type registerUC struct {
