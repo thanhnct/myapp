@@ -9,6 +9,7 @@ import (
 	"myapp/module/image"
 	productcontroller "myapp/module/product/controller"
 	productusecase "myapp/module/product/domain/usecase"
+	productHTTP "myapp/module/product/infras/httpservice"
 	productmysql "myapp/module/product/repository/mysql"
 	"myapp/module/user/infras/httpservice"
 	"myapp/module/user/infras/repository"
@@ -93,5 +94,7 @@ func main() {
 	userUseCase := userusecase.UseCaseWithBuilder(builder.NewComplexBuilder(builder.NewSimpleBuilder(db, tokenProvider)))
 	httpservice.NewUserService(userUseCase, serviceCtx).SetAuthClient(authClient).Routes(v1)
 	image.NewHTTPService(serviceCtx).Routes(v1)
+
+	productHTTP.NewHttpService(serviceCtx).Routes(v1)
 	r.Run(":3000")
 }
