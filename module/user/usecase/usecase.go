@@ -2,8 +2,10 @@ package userusecase
 
 import (
 	"context"
-	"github.com/google/uuid"
+	"myapp/common"
 	userdomain "myapp/module/user/domain"
+
+	"github.com/google/uuid"
 )
 
 type UseCase interface {
@@ -66,7 +68,7 @@ type UserQueryRepository interface {
 
 type UserCommandRepository interface {
 	Create(ctx context.Context, data *userdomain.User) error
-	//Update(ctx context.Context, data userdomain.User) error
+	Update(ctx context.Context, data *userdomain.User) error
 	//Delete(ctx context.Context, data userdomain.User) error
 }
 
@@ -83,4 +85,9 @@ type SessionQueryRepository interface {
 type SessionCommandRepository interface {
 	Create(ctx context.Context, data *userdomain.Session) error
 	Delete(ctx context.Context, id uuid.UUID) error
+}
+
+type ImageRepository interface {
+	Find(ctx context.Context, id uuid.UUID) (*common.Image, error)
+	SetImageStatusActivated(ctx context.Context, id uuid.UUID) error
 }

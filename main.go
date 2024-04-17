@@ -91,7 +91,7 @@ func main() {
 
 	//userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
 	userUseCase := userusecase.UseCaseWithBuilder(builder.NewComplexBuilder(builder.NewSimpleBuilder(db, tokenProvider)))
-	httpservice.NewUserService(userUseCase, serviceCtx).Routes(v1)
+	httpservice.NewUserService(userUseCase, serviceCtx).SetAuthClient(authClient).Routes(v1)
 	image.NewHTTPService(serviceCtx).Routes(v1)
 	r.Run(":3000")
 }

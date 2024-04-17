@@ -1,8 +1,9 @@
 package userdomain
 
 import (
-	"github.com/google/uuid"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type User struct {
@@ -14,9 +15,10 @@ type User struct {
 	salt      string
 	role      Role
 	status    string
+	avatar    string
 }
 
-func NewUser(id uuid.UUID, firstName string, lastName string, email string, password string, salt string, role Role, status string) (*User, error) {
+func NewUser(id uuid.UUID, firstName string, lastName string, email string, password string, salt string, role Role, status string, avatar string) (*User, error) {
 	return &User{
 		id:        id,
 		firstName: firstName,
@@ -26,6 +28,7 @@ func NewUser(id uuid.UUID, firstName string, lastName string, email string, pass
 		salt:      salt,
 		role:      role,
 		status:    status,
+		avatar:    avatar,
 	}, nil
 }
 
@@ -77,4 +80,12 @@ func GetRole(s string) Role {
 	default:
 		return RoleUser
 	}
+}
+
+func (u User) Avatar() string { return u.avatar }
+
+func (u *User) ChangeAvatar(avt string) error {
+	u.avatar = avt
+
+	return nil
 }

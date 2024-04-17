@@ -30,7 +30,7 @@ CREATE TABLE `users` (
   `email` varchar(100) DEFAULT NULL,
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `salt` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `avatar` json DEFAULT NULL,
+  `avatar` text DEFAULT NULL,
   `role` enum ('user', 'admin') NOT NULL DEFAULT 'user',
   `status` enum ('activated', 'banned') DEFAULT 'activated',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,

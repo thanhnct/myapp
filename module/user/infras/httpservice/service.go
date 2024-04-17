@@ -2,6 +2,9 @@ package httpservice
 
 import (
 	"myapp/common"
+	"myapp/middleware"
+	"myapp/module/image"
+	"myapp/module/user/infras/repository"
 	userusecase "myapp/module/user/usecase"
 	"net/http"
 
@@ -11,8 +14,9 @@ import (
 )
 
 type service struct {
-	uc   userusecase.UseCase
-	sctx sctx.ServiceContext
+	uc         userusecase.UseCase
+	sctx       sctx.ServiceContext
+	authClient middleware.AuthClient
 }
 
 func NewUserService(uc userusecase.UseCase, sctx sctx.ServiceContext) service {
@@ -80,8 +84,39 @@ func (s service) handleRefreshToken() gin.HandlerFunc {
 	}
 }
 
+func (s service) handleChangeAvatar() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var dto userusecase.SingleImageDTO
+
+		if err := c.BindJSON(&dto); err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			return
+		}
+
+		dto.Requester = c.MustGet(common.KeyRequester).(common.Requester)
+
+		dbCtx := s.sctx.MustGet(common.KeyGorm).(common.DbContext)
+
+		userRepo := repository.NewUserRepo(dbCtx.GetDB())
+		imgRepo := image.NewRepo(dbCtx.GetDB())
+
+		if err := userusecase.NewChangeAvtUC(userRepo, userRepo, imgRepo).ChangeAvatar(c.Request.Context(), dto); err != nil {
+			common.WriteErrorResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData(true))
+	}
+}
+
 func (s service) Routes(g *gin.RouterGroup) {
 	g.POST("/register", s.handleRegister())
 	g.POST("/authenticate", s.handleLogin())
 	g.POST("/refresh-token", s.handleRefreshToken())
+	g.PATCH("/profile/change-avatar", middleware.RequireAuth(s.authClient), s.handleChangeAvatar()) // RPC-restful
+}
+
+func (s service) SetAuthClient(ac middleware.AuthClient) service {
+	s.authClient = ac
+	return s
 }

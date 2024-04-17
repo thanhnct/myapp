@@ -57,6 +57,7 @@ func (uc *registerUC) Register(ctx context.Context, registerDto EmailPasswordReg
 		salt,
 		userdomain.RoleUser,
 		common.Activated,
+		"",
 	)
 
 	if err != nil {

@@ -1,10 +1,11 @@
 package builder
 
 import (
-	"gorm.io/gorm"
 	"myapp/common"
 	"myapp/module/user/infras/repository"
 	userusecase "myapp/module/user/usecase"
+
+	"gorm.io/gorm"
 )
 
 type simpleBuilder struct {
