@@ -5,7 +5,7 @@ import (
 	"myapp/middleware"
 	"myapp/module/image"
 	"myapp/module/user/infras/repository"
-	userusecase "myapp/module/user/usecase"
+	userUsecase "myapp/module/user/usecase"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,18 +14,18 @@ import (
 )
 
 type service struct {
-	uc         userusecase.UseCase
+	uc         userUsecase.UseCase
 	sctx       sctx.ServiceContext
 	authClient middleware.AuthClient
 }
 
-func NewUserService(uc userusecase.UseCase, sctx sctx.ServiceContext) service {
+func NewUserService(uc userUsecase.UseCase, sctx sctx.ServiceContext) service {
 	return service{uc: uc, sctx: sctx}
 }
 
 func (s service) handleRegister() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dto userusecase.EmailPasswordRegistrationDTO
+		var dto userUsecase.EmailPasswordRegistrationDTO
 		if err := c.BindJSON(&dto); err != nil {
 			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
@@ -44,7 +44,7 @@ func (s service) handleRegister() gin.HandlerFunc {
 
 func (s service) handleLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dto userusecase.EmailPasswordLoginDTO
+		var dto userUsecase.EmailPasswordLoginDTO
 		if err := c.BindJSON(&dto); err != nil {
 			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
@@ -86,7 +86,7 @@ func (s service) handleRefreshToken() gin.HandlerFunc {
 
 func (s service) handleChangeAvatar() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var dto userusecase.SingleImageDTO
+		var dto userUsecase.SingleImageDTO
 
 		if err := c.BindJSON(&dto); err != nil {
 			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
@@ -100,7 +100,7 @@ func (s service) handleChangeAvatar() gin.HandlerFunc {
 		userRepo := repository.NewUserRepo(dbCtx.GetDB())
 		imgRepo := image.NewRepo(dbCtx.GetDB())
 
-		if err := userusecase.NewChangeAvtUC(userRepo, userRepo, imgRepo).ChangeAvatar(c.Request.Context(), dto); err != nil {
+		if err := userUsecase.NewChangeAvtUC(userRepo, userRepo, imgRepo).ChangeAvatar(c.Request.Context(), dto); err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}

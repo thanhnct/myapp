@@ -1,7 +1,7 @@
 package repository
 
 import (
-	userdomain "myapp/module/user/domain"
+	userDomain "myapp/module/user/domain"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,8 +19,8 @@ type UserDTO struct {
 	Avatar    *string   `gorm:"column:avatar;"`
 }
 
-func (dto *UserDTO) ToEntity() (*userdomain.User, error) {
-	return userdomain.NewUser(dto.Id, dto.FirstName, dto.LastName, dto.Email, dto.Password, dto.Salt, userdomain.GetRole(dto.Role), dto.Status, StringFromPointer(dto.Avatar))
+func (dto *UserDTO) ToEntity() (*userDomain.User, error) {
+	return userDomain.NewUser(dto.Id, dto.FirstName, dto.LastName, dto.Email, dto.Password, dto.Salt, userDomain.GetRole(dto.Role), dto.Status, StringFromPointer(dto.Avatar))
 }
 
 type SessionDTO struct {
@@ -31,8 +31,8 @@ type SessionDTO struct {
 	RefreshExpAt time.Time `gorm:"column:refresh_exp_at;"`
 }
 
-func (dto SessionDTO) ToEntity() (*userdomain.Session, error) {
-	s := userdomain.NewSession(dto.Id, dto.UserId, dto.RefreshToken, dto.AccessExpAt, dto.RefreshExpAt)
+func (dto SessionDTO) ToEntity() (*userDomain.Session, error) {
+	s := userDomain.NewSession(dto.Id, dto.UserId, dto.RefreshToken, dto.AccessExpAt, dto.RefreshExpAt)
 	return s, nil
 }
 

@@ -1,8 +1,9 @@
-package userdomain
+package domain
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Session struct {

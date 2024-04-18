@@ -6,14 +6,14 @@ import (
 	"myapp/common"
 	"myapp/component"
 	"myapp/middleware"
-	"myapp/module/image"
-	productcontroller "myapp/module/product/controller"
-	productusecase "myapp/module/product/domain/usecase"
+	imageHTTP "myapp/module/image"
+	productController "myapp/module/product/controller"
+	productUsecase "myapp/module/product/domain/usecase"
 	productHTTP "myapp/module/product/infras/httpservice"
-	productmysql "myapp/module/product/repository/mysql"
-	"myapp/module/user/infras/httpservice"
+	productRepo "myapp/module/product/repository/mysql"
+	userHTTP "myapp/module/user/infras/httpservice"
 	"myapp/module/user/infras/repository"
-	userusecase "myapp/module/user/usecase"
+	userUsecase "myapp/module/user/usecase"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -51,7 +51,7 @@ func main() {
 
 	tokenProvider := serviceCtx.MustGet(common.KeyJWT).(component.TokenProvider)
 
-	authClient := userusecase.NewIntrospectUC(repository.NewUserRepo(db), repository.NewSessionMySQLRepo(db), tokenProvider)
+	authClient := userUsecase.NewIntrospectUC(repository.NewUserRepo(db), repository.NewSessionMySQLRepo(db), tokenProvider)
 
 	r.GET("/ping", middleware.RequireAuth(authClient), func(c *gin.Context) {
 
@@ -78,9 +78,9 @@ func main() {
 		})
 	})
 
-	repo := productmysql.NewMysqlRepository(db)
-	useCase := productusecase.NewCreateProductUseCase(repo)
-	api := productcontroller.NewAPIController(useCase)
+	repo := productRepo.NewMysqlRepository(db)
+	useCase := productUsecase.NewCreateproductUsecase(repo)
+	api := productController.NewAPIController(useCase)
 
 	v1 := r.Group("/v1")
 	{
@@ -90,10 +90,11 @@ func main() {
 		}
 	}
 
-	//userUC := userusecase.NewUserUseCase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
-	userUseCase := userusecase.UseCaseWithBuilder(builder.NewComplexBuilder(builder.NewSimpleBuilder(db, tokenProvider)))
-	httpservice.NewUserService(userUseCase, serviceCtx).SetAuthClient(authClient).Routes(v1)
-	image.NewHTTPService(serviceCtx).Routes(v1)
+	//userUC := userUsecase.NewuserUsecase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
+	userUC := userUsecase.UseCaseWithBuilder(builder.NewComplexBuilder(builder.NewSimpleBuilder(db, tokenProvider)))
+	userHTTP.NewUserService(userUC, serviceCtx).SetAuthClient(authClient).Routes(v1)
+
+	imageHTTP.NewHTTPService(serviceCtx).Routes(v1)
 
 	productHTTP.NewHttpService(serviceCtx).Routes(v1)
 	r.Run(":3000")

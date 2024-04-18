@@ -1,11 +1,12 @@
-package userusecase
+package usecase
 
 import (
 	"context"
 	"errors"
+	"myapp/common"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"myapp/common"
 )
 
 type TokenParser interface {

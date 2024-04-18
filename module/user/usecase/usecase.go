@@ -1,9 +1,9 @@
-package userusecase
+package usecase
 
 import (
 	"context"
 	"myapp/common"
-	userdomain "myapp/module/user/domain"
+	userDomain "myapp/module/user/domain"
 
 	"github.com/google/uuid"
 )
@@ -62,14 +62,14 @@ type UserRepository interface {
 }
 
 type UserQueryRepository interface {
-	Find(ctx context.Context, id uuid.UUID) (*userdomain.User, error)
-	FindByEmail(ctx context.Context, email string) (*userdomain.User, error)
+	Find(ctx context.Context, id uuid.UUID) (*userDomain.User, error)
+	FindByEmail(ctx context.Context, email string) (*userDomain.User, error)
 }
 
 type UserCommandRepository interface {
-	Create(ctx context.Context, data *userdomain.User) error
-	Update(ctx context.Context, data *userdomain.User) error
-	//Delete(ctx context.Context, data userdomain.User) error
+	Create(ctx context.Context, data *userDomain.User) error
+	Update(ctx context.Context, data *userDomain.User) error
+	//Delete(ctx context.Context, data userDomain.User) error
 }
 
 type SessionRepository interface {
@@ -78,12 +78,12 @@ type SessionRepository interface {
 }
 
 type SessionQueryRepository interface {
-	Find(ctx context.Context, id uuid.UUID) (*userdomain.Session, error)
-	FindByRefreshToken(ctx context.Context, rt string) (*userdomain.Session, error)
+	Find(ctx context.Context, id uuid.UUID) (*userDomain.Session, error)
+	FindByRefreshToken(ctx context.Context, rt string) (*userDomain.Session, error)
 }
 
 type SessionCommandRepository interface {
-	Create(ctx context.Context, data *userdomain.Session) error
+	Create(ctx context.Context, data *userDomain.Session) error
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 

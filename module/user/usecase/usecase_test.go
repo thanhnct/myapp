@@ -1,10 +1,10 @@
-package userusecase
+package usecase
 
 //
 //import (
 //	"context"
 //	"github.com/pkg/errors"
-//	userdomain "myapp/module/user/domain"
+//	userDomain "myapp/module/user/domain"
 //	"testing"
 //)
 //
@@ -26,19 +26,19 @@ package userusecase
 //type mockUserRepo struct {
 //}
 //
-//func (mockUserRepo) FindByEmail(ctx context.Context, email string) (*userdomain.User, error) {
+//func (mockUserRepo) FindByEmail(ctx context.Context, email string) (*userDomain.User, error) {
 //	if email == "existed@gmail.com" {
-//		return &userdomain.User{}, nil
+//		return &userDomain.User{}, nil
 //	}
 //
 //	if email == "error@gmail.com" {
 //		return nil, errors.New("cannot get record")
 //	}
 //
-//	return &userdomain.User{}, nil
+//	return &userDomain.User{}, nil
 //}
 //
-//func (mockUserRepo) Create(ctx context.Context, data *userdomain.User) error {
+//func (mockUserRepo) Create(ctx context.Context, data *userDomain.User) error {
 //	return nil
 //}
 //
@@ -58,7 +58,7 @@ package userusecase
 //type mockSessionRepo struct {
 //}
 //
-//func (mockSessionRepo) Create(ctx context.Context, data *userdomain.Session) error {
+//func (mockSessionRepo) Create(ctx context.Context, data *userDomain.Session) error {
 //	return nil
 //}
 //
@@ -78,7 +78,7 @@ package userusecase
 //				Email:     "existed@gmail.com",
 //				Password:  "123456",
 //			},
-//			Expected: userdomain.ErrEmailHasExisted,
+//			Expected: userDomain.ErrEmailHasExisted,
 //		},
 //		{
 //			Input: EmailPasswordRegistrationDTO{

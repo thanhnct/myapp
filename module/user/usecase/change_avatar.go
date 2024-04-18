@@ -1,10 +1,10 @@
-package userusecase
+package usecase
 
 import (
 	"context"
 	"myapp/common"
 
-	userdomain "myapp/module/user/domain"
+	userDomain "myapp/module/user/domain"
 
 	"github.com/viettranx/service-context/core"
 )
@@ -27,21 +27,21 @@ func (uc *changeAvtUC) ChangeAvatar(ctx context.Context, dto SingleImageDTO) err
 	userEntity, err := uc.userQueryRepo.Find(ctx, dto.Requester.UserId())
 
 	if err != nil {
-		return core.ErrBadRequest.WithError(userdomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
+		return core.ErrBadRequest.WithError(userDomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
 	}
 
 	img, err := uc.imgRepo.Find(ctx, dto.ImageId)
 
 	if err != nil {
-		return core.ErrBadRequest.WithError(userdomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
+		return core.ErrBadRequest.WithError(userDomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
 	}
 
 	if err := userEntity.ChangeAvatar(img.FileName); err != nil {
-		return core.ErrBadRequest.WithError(userdomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
+		return core.ErrBadRequest.WithError(userDomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
 	}
 
 	if err := uc.userCmdRepo.Update(ctx, userEntity); err != nil {
-		return core.ErrBadRequest.WithError(userdomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
+		return core.ErrBadRequest.WithError(userDomain.ErrCannotChangeAvatar.Error()).WithDebug(err.Error())
 	}
 
 	go func() {

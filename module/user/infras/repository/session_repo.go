@@ -3,10 +3,11 @@ package repository
 import (
 	"context"
 	"errors"
+	"myapp/common"
+	userDomain "myapp/module/user/domain"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"myapp/common"
-	userdomain "myapp/module/user/domain"
 )
 
 const TbSessionName = "user_sessions"
@@ -19,7 +20,7 @@ func NewSessionMySQLRepo(db *gorm.DB) sessionMySQLRepo {
 	return sessionMySQLRepo{db: db}
 }
 
-func (repo sessionMySQLRepo) Create(ctx context.Context, data *userdomain.Session) error {
+func (repo sessionMySQLRepo) Create(ctx context.Context, data *userDomain.Session) error {
 	dto := SessionDTO{
 		Id:           data.Id(),
 		UserId:       data.UserId(),
@@ -31,7 +32,7 @@ func (repo sessionMySQLRepo) Create(ctx context.Context, data *userdomain.Sessio
 	return repo.db.Table(TbSessionName).Create(&dto).Error
 }
 
-func (repo sessionMySQLRepo) Find(ctx context.Context, id uuid.UUID) (*userdomain.Session, error) {
+func (repo sessionMySQLRepo) Find(ctx context.Context, id uuid.UUID) (*userDomain.Session, error) {
 	var dto SessionDTO
 
 	if err := repo.db.Table(TbSessionName).Where("id = ?", id).First(&dto).Error; err != nil {
@@ -45,7 +46,7 @@ func (repo sessionMySQLRepo) Find(ctx context.Context, id uuid.UUID) (*userdomai
 	return dto.ToEntity()
 }
 
-func (repo sessionMySQLRepo) FindByRefreshToken(ctx context.Context, rt string) (*userdomain.Session, error) {
+func (repo sessionMySQLRepo) FindByRefreshToken(ctx context.Context, rt string) (*userDomain.Session, error) {
 	var dto SessionDTO
 
 	if err := repo.db.Table(TbSessionName).Where("refresh_token = ?", rt).First(&dto).Error; err != nil {

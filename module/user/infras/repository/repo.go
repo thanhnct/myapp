@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"myapp/common"
-	userdomain "myapp/module/user/domain"
+	userDomain "myapp/module/user/domain"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -20,7 +20,7 @@ func NewUserRepo(db *gorm.DB) userMySQLRepo {
 	return userMySQLRepo{db: db}
 }
 
-func (repo userMySQLRepo) FindByEmail(ctx context.Context, email string) (*userdomain.User, error) {
+func (repo userMySQLRepo) FindByEmail(ctx context.Context, email string) (*userDomain.User, error) {
 	var dto UserDTO
 
 	if err := repo.db.Table(TbName).Where("email = ?", email).First(&dto).Error; err != nil {
@@ -34,7 +34,7 @@ func (repo userMySQLRepo) FindByEmail(ctx context.Context, email string) (*userd
 	return dto.ToEntity()
 }
 
-func (repo userMySQLRepo) Find(ctx context.Context, id uuid.UUID) (*userdomain.User, error) {
+func (repo userMySQLRepo) Find(ctx context.Context, id uuid.UUID) (*userDomain.User, error) {
 	var dto UserDTO
 
 	if err := repo.db.Table(TbName).Where("id = ?", id).First(&dto).Error; err != nil {
@@ -48,7 +48,7 @@ func (repo userMySQLRepo) Find(ctx context.Context, id uuid.UUID) (*userdomain.U
 	return dto.ToEntity()
 }
 
-func (repo userMySQLRepo) Create(ctx context.Context, data *userdomain.User) error {
+func (repo userMySQLRepo) Create(ctx context.Context, data *userDomain.User) error {
 	dto := UserDTO{
 		Id:        data.Id(),
 		FirstName: data.FirstName(),
@@ -67,7 +67,7 @@ func (repo userMySQLRepo) Create(ctx context.Context, data *userdomain.User) err
 	return nil
 }
 
-func (repo userMySQLRepo) Update(ctx context.Context, data *userdomain.User) error {
+func (repo userMySQLRepo) Update(ctx context.Context, data *userDomain.User) error {
 	dto := UserDTO{
 		Id:        data.Id(),
 		FirstName: data.FirstName(),
