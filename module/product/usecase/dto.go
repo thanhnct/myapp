@@ -1,19 +1,35 @@
 package usecase
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type ProductUpdateDTO struct {
-	Name        *string `gorm:"column:name" json:"name"`
-	CategoryId  *int    `gorm:"column:category_id" json:"category_id"`
-	Status      *string `gorm:"column:status" json:"status"`
-	Kind        *string `gorm:"column:kind" json:"kind"`
-	Description *string `gorm:"column:description" json:"description"`
+	Id          uuid.UUID `json:"id"`
+	Name        *string   `json:"name"`
+	CategoryId  *int      `json:"category_id"`
+	Status      *string   `json:"status"`
+	Kind        *string   `json:"kind"`
+	Description *string   `json:"description"`
 }
 
 type ProductCreateDTO struct {
-	Id          uuid.UUID `column:"id" json:"id"`
-	Name        string    `gorm:"column:name" json:"name"`
-	CategoryId  int       `gorm:"column:category_id" json:"category_id"`
-	Kind        string    `gorm:"column:kind" json:"kind"`
-	Description string    `gorm:"column:description" json:"description"`
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	CategoryId  int       `json:"category_id"`
+	Kind        string    `json:"kind"`
+	Description string    `json:"description"`
+}
+
+type ProductResponseDTO struct {
+	Id          uuid.UUID `json:"id"`
+	Status      string    `json:"status"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	CatId       int       `json:"category_id"`
+	Name        string    `json:"name"`
+	Kind        string    `json:"kind"`
+	Description string    `json:"description"`
 }

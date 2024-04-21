@@ -2,7 +2,9 @@ package usecase
 
 import (
 	"context"
+	"myapp/common"
 	"myapp/module/product/domain"
+	"time"
 
 	"github.com/viettranx/service-context/core"
 )
@@ -18,11 +20,16 @@ func NewProductUC(productCommandRepo ProductCommandRepository) *createProductUC 
 }
 
 func (uc *createProductUC) CreateProduct(ctx context.Context, dto ProductCreateDTO) error {
+	now := time.Now().UTC()
 	product, err := domain.NewProduct(
+		common.GenUUID(),
 		dto.Name,
 		dto.Kind,
 		dto.Description,
+		"activated",
 		0,
+		now,
+		now,
 	)
 
 	if err != nil {

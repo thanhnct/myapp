@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"myapp/module/product/domain"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,6 +18,7 @@ type ProductDTO struct {
 	UpdatedAt   time.Time `gorm:"column:updated_at;"`
 }
 
-// func (dto *ProductDTO) ToEntity() (*domain.Product, error) {
-// 	return domain.NewProduct(dto.Id, dto.FirstName, dto.LastName, dto.Email, dto.Password, dto.Salt, userDomain.GetRole(dto.Role), dto.Status, StringFromPointer(dto.Avatar))
-// }
+func (dto *ProductDTO) ToEntity() (*domain.Product, error) {
+
+	return domain.NewProduct(dto.Id, dto.Name, dto.Kind, dto.Description, dto.Status, dto.CategoryId, dto.CreatedAt, dto.UpdatedAt)
+}
