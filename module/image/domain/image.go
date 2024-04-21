@@ -1,4 +1,4 @@
-package image
+package domain
 
 import (
 	"fmt"

@@ -1,8 +1,11 @@
-package image
+package httpservice
 
 import (
 	"context"
 	"myapp/common"
+	"myapp/module/image/domain"
+	"myapp/module/image/infras/repository"
+	"myapp/module/image/usecase"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -43,7 +46,7 @@ func (s httpService) handleUploadImage() gin.HandlerFunc {
 			return
 		}
 
-		dto := UploadDTO{
+		dto := usecase.UploadDTO{
 			Name:     c.PostForm("name"),
 			FileName: f.Filename,
 			FileType: http.DetectContentType(fileData), //  f.Header.Get("Content-Type")
@@ -51,10 +54,10 @@ func (s httpService) handleUploadImage() gin.HandlerFunc {
 			FileData: fileData,
 		}
 
-		uploader := s.serviceCtx.MustGet(common.KeyAWSS3).(Uploader)
+		uploader := s.serviceCtx.MustGet(common.KeyAWSS3).(usecase.Uploader)
 		dbContext := s.serviceCtx.MustGet(common.KeyGorm).(common.DbContext)
 
-		uc := NewUseCase(uploader, NewRepo(dbContext.GetDB()))
+		uc := usecase.NewUseCase(uploader, repository.NewRepo(dbContext.GetDB()))
 
 		media, err := uc.UploadImage(c.Request.Context(), dto)
 
@@ -71,7 +74,7 @@ func (s httpService) handleUploadImage() gin.HandlerFunc {
 
 type mockImageRepo struct{}
 
-func (mockImageRepo) Create(ctx context.Context, entity *Image) error {
+func (mockImageRepo) Create(ctx context.Context, entity *domain.Image) error {
 	return nil
 }
 

@@ -4,18 +4,7 @@ import (
 	"myapp/common"
 	"myapp/module/user/infras/repository"
 	userusecase "myapp/module/user/usecase"
-
-	"gorm.io/gorm"
 )
-
-type simpleBuilder struct {
-	db *gorm.DB
-	tp userusecase.TokenProvider
-}
-
-func NewSimpleBuilder(db *gorm.DB, tp userusecase.TokenProvider) simpleBuilder {
-	return simpleBuilder{db: db, tp: tp}
-}
 
 func (s simpleBuilder) BuildUserQueryRepo() userusecase.UserQueryRepository {
 	return repository.NewUserRepo(s.db)

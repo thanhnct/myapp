@@ -1,8 +1,9 @@
-package image
+package repository
 
 import (
 	"context"
 	"myapp/common"
+	"myapp/module/image/domain"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -17,8 +18,8 @@ func NewRepo(db *gorm.DB) repo {
 	return repo{db: db}
 }
 
-func (r repo) Create(ctx context.Context, entity *Image) error {
-	if err := r.db.Table(TbName).Create(entity).Error; err != nil {
+func (r repo) Create(ctx context.Context, entity *domain.Image) error {
+	if err := r.db.Table(domain.TbName).Create(entity).Error; err != nil {
 		return errors.WithStack(err)
 	}
 
@@ -26,9 +27,9 @@ func (r repo) Create(ctx context.Context, entity *Image) error {
 }
 
 func (r repo) Find(ctx context.Context, id uuid.UUID) (*common.Image, error) {
-	var img Image
+	var img domain.Image
 
-	if err := r.db.Table(TbName).Where("id = ?", id).First(&img).Error; err != nil {
+	if err := r.db.Table(domain.TbName).Where("id = ?", id).First(&img).Error; err != nil {
 		return nil, errors.WithStack(err)
 	}
 
@@ -45,8 +46,8 @@ func (r repo) Find(ctx context.Context, id uuid.UUID) (*common.Image, error) {
 }
 
 func (r repo) SetImageStatusActivated(ctx context.Context, id uuid.UUID) error {
-	if err := r.db.Table(TbName).Where("id = ?", id).
-		Updates(Image{Status: StatusActivated}).Error; err != nil {
+	if err := r.db.Table(domain.TbName).Where("id = ?", id).
+		Updates(domain.Image{Status: domain.StatusActivated}).Error; err != nil {
 		return errors.WithStack(err)
 	}
 

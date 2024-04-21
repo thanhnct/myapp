@@ -1,26 +1,43 @@
 package common
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
-type BaseModel struct {
-	Id        uuid.UUID `gorm:"column:id;" json:"id"`
-	Status    string    `gorm:"column:status" json:"status"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt time.Time `gorm:"column:updated_at" json:"updated_at"`
+type EntityBase struct {
+	id        uuid.UUID `gorm:"column:id;"`
+	status    string    `gorm:"column:status"`
+	createdAt time.Time `gorm:"column:created_at"`
+	updatedAt time.Time `gorm:"column:updated_at"`
 }
 
-func GenNewModel() BaseModel {
+func GenNewEntityBase() EntityBase {
 	now := time.Now().UTC()
 
-	return BaseModel{
-		Id:        GenUUID(),
-		Status:    Activated,
-		CreatedAt: now,
-		UpdatedAt: now,
+	return EntityBase{
+		id:        GenUUID(),
+		status:    Activated,
+		createdAt: now,
+		updatedAt: now,
 	}
+}
+
+func (u EntityBase) Id() uuid.UUID {
+	return u.id
+}
+
+func (u EntityBase) Status() string {
+	return u.status
+}
+
+func (u EntityBase) CreatedAt() time.Time {
+	return u.createdAt
+}
+
+func (u EntityBase) UpdatedAt() time.Time {
+	return u.updatedAt
 }
 
 func GenUUID() uuid.UUID {

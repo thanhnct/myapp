@@ -2,7 +2,9 @@ package httpservice
 
 import (
 	"myapp/common"
+	"myapp/middleware"
 	"myapp/module/product/query"
+	"myapp/module/product/usecase"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,11 +13,13 @@ import (
 )
 
 type httpService struct {
-	sctx sctx.ServiceContext
+	uc         usecase.UseCase
+	sctx       sctx.ServiceContext
+	authClient middleware.AuthClient
 }
 
-func NewHttpService(sctx sctx.ServiceContext) httpService {
-	return httpService{sctx: sctx}
+func NewHttpService(uc usecase.UseCase, sctx sctx.ServiceContext) httpService {
+	return httpService{uc: uc, sctx: sctx}
 }
 
 func (s httpService) handleListProduct() gin.HandlerFunc {
@@ -38,9 +42,32 @@ func (s httpService) handleListProduct() gin.HandlerFunc {
 	}
 }
 
+func (s httpService) handleCreateProduct() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var dto usecase.ProductCreateDTO
+		if err := c.BindJSON(&dto); err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			return
+		}
+
+		if err := s.uc.CreateProduct(c.Request.Context(), dto); err != nil {
+			common.WriteErrorResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData(true))
+	}
+}
+
 func (s httpService) Routes(g *gin.RouterGroup) {
 	products := g.Group("products")
 	{
 		products.GET("", s.handleListProduct())
+		products.POST("", middleware.RequireAuth(s.authClient), s.handleCreateProduct())
 	}
+}
+
+func (s httpService) SetAuthClient(ac middleware.AuthClient) httpService {
+	s.authClient = ac
+	return s
 }

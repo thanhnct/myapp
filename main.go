@@ -6,11 +6,9 @@ import (
 	"myapp/common"
 	"myapp/component"
 	"myapp/middleware"
-	imageHTTP "myapp/module/image"
-	productController "myapp/module/product/controller"
-	productUsecase "myapp/module/product/domain/usecase"
+	imageHTTP "myapp/module/image/infras/httpservice"
 	productHTTP "myapp/module/product/infras/httpservice"
-	productRepo "myapp/module/product/repository/mysql"
+	productUsecase "myapp/module/product/usecase"
 	userHTTP "myapp/module/user/infras/httpservice"
 	"myapp/module/user/infras/repository"
 	userUsecase "myapp/module/user/usecase"
@@ -53,13 +51,9 @@ func main() {
 
 	authClient := userUsecase.NewIntrospectUC(repository.NewUserRepo(db), repository.NewSessionMySQLRepo(db), tokenProvider)
 
-	r.GET("/ping", middleware.RequireAuth(authClient), func(c *gin.Context) {
-
-		requester := c.MustGet(common.KeyRequester).(common.Requester)
-
+	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message":   "pong",
-			"requester": requester.LastName(),
+			"message": "pong",
 		})
 	})
 
@@ -78,24 +72,16 @@ func main() {
 		})
 	})
 
-	repo := productRepo.NewMysqlRepository(db)
-	useCase := productUsecase.NewCreateproductUsecase(repo)
-	api := productController.NewAPIController(useCase)
-
 	v1 := r.Group("/v1")
-	{
-		products := v1.Group("/products")
-		{
-			products.POST("", api.CreateProductAPI(db))
-		}
-	}
 
 	//userUC := userUsecase.NewuserUsecase(repository.NewUserRepo(db), &common.Hasher{}, tokenProvider, repository.NewSessionMySQLRepo(db))
 	userUC := userUsecase.UseCaseWithBuilder(builder.NewComplexBuilder(builder.NewSimpleBuilder(db, tokenProvider)))
 	userHTTP.NewUserService(userUC, serviceCtx).SetAuthClient(authClient).Routes(v1)
 
+	productUC := productUsecase.UseCaseWithBuilder(builder.NewSimpleBuilder(db, nil))
+	productHTTP.NewHttpService(productUC, serviceCtx).SetAuthClient(authClient).Routes(v1)
+
 	imageHTTP.NewHTTPService(serviceCtx).Routes(v1)
 
-	productHTTP.NewHttpService(serviceCtx).Routes(v1)
 	r.Run(":3000")
 }

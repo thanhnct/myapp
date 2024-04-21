@@ -3,7 +3,7 @@ package httpservice
 import (
 	"myapp/common"
 	"myapp/middleware"
-	"myapp/module/image"
+	imageRepo "myapp/module/image/infras/repository"
 	"myapp/module/user/infras/repository"
 	userUsecase "myapp/module/user/usecase"
 	"net/http"
@@ -98,7 +98,7 @@ func (s service) handleChangeAvatar() gin.HandlerFunc {
 		dbCtx := s.sctx.MustGet(common.KeyGorm).(common.DbContext)
 
 		userRepo := repository.NewUserRepo(dbCtx.GetDB())
-		imgRepo := image.NewRepo(dbCtx.GetDB())
+		imgRepo := imageRepo.NewRepo(dbCtx.GetDB())
 
 		if err := userUsecase.NewChangeAvtUC(userRepo, userRepo, imgRepo).ChangeAvatar(c.Request.Context(), dto); err != nil {
 			common.WriteErrorResponse(c, err)

@@ -12,7 +12,7 @@ import (
 // View/Read Model
 
 type ProductDTO struct {
-	common.BaseModel
+	common.EntityBase
 	CatId    uuid.UUID    `gorm:"column:cat_id" json:"category_id"`
 	Name     string       `gorm:"column:name" json:"name"`
 	Type     string       `gorm:"column:type" json:"type"`
