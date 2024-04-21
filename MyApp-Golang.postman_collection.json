@@ -1,0 +1,399 @@
+{
+	"info": {
+		"_postman_id": "17cc061f-3931-41b0-9e5d-6adb71438a28",
+		"name": "MyApp-Golang",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5297690"
+	},
+	"item": [
+		{
+			"name": "Ping",
+			"item": [
+				{
+					"name": "Ping",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/ping",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Result of ping",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/{{Version}}/ping",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"{{Version}}",
+										"ping"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 19 Mar 2024 07:29:21 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "18"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"pong\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Thành\",\r\n    \"last_name\": \"Nguyễn\",\r\n    \"email\": \"congthanh29897@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/register",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authenticate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"congthanh29897@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/authenticate",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMThlNWI1Ni0zNTA4LTdkMGUtYTk4OS00MWZiMGRkYTUwYmEiLCJleHAiOjE3MTE2MDEwMjAsIm5iZiI6MTcxMDk5NjIyMCwiaWF0IjoxNzEwOTk2MjIwLCJqdGkiOiIwMThlNWY1Mi02YWVmLTcyZWMtYjE0MS1iOTAwYTMwNDRhMTAifQ.52yrD0SgC_0FNATutnmsBd5fQ-penoxhhf2HHD_6CI8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"congthanh29897@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/revoke-token",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"revoke-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refresh_token\": \"2809690413c403302b5a3f6077eef49c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/refresh-token",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change avatar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMThlZWFmMC0wMmNjLTc1ZmEtOWZlYi0zYjY3MjViMjhkMTAiLCJleHAiOjE3MTM5NDM0MDYsIm5iZiI6MTcxMzMzODYwNiwiaWF0IjoxNzEzMzM4NjA2LCJqdGkiOiIwMThlZWFmMC02NTExLTcwM2QtYjJiMC1lOTEwZjFhMGJhMDgifQ.HdDUgHRj94nKZ7tXsqBuyGKl0aGlUECnDtGoXTHO2RU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"image_id\": \"018eeaf3-89b6-798e-af70-b211df89446ac\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/profile/change-avatar",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"profile",
+								"change-avatar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create new product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMThmMDA2OS1jNjAxLTc2M2YtYWIyMS1lYWYwYTY0Y2JlYTEiLCJleHAiOjE3MTQzMDM2OTQsIm5iZiI6MTcxMzY5ODg5NCwiaWF0IjoxNzEzNjk4ODk0LCJqdGkiOiIwMThmMDA2OS1mNDViLTdhNDEtYmYxYS1lZjk3ZDdhMGU2NTUifQ.1O49b-GFEUiQ6-_L0FZe06ca34Q2HMNwH_1ebHl64L0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"sản phẩm\",\r\n    \"kind\": \"food\",\r\n    \"category_id\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/products",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update new product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMThmMDA2OS1jNjAxLTc2M2YtYWIyMS1lYWYwYTY0Y2JlYTEiLCJleHAiOjE3MTQzMDM2OTQsIm5iZiI6MTcxMzY5ODg5NCwiaWF0IjoxNzEzNjk4ODk0LCJqdGkiOiIwMThmMDA2OS1mNDViLTdhNDEtYmYxYS1lZjk3ZDdhMGU2NTUifQ.1O49b-GFEUiQ6-_L0FZe06ca34Q2HMNwH_1ebHl64L0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"018f0197-c840-7921-8038-6021d74f93ef\",\r\n    \"name\": \"sản phẩm 121\",\r\n    \"kind\": \"drink\",\r\n    \"description\": \"aa\",\r\n    \"status\": \"\",\r\n    \"category_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/products",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update new product Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMThmMDA2OS1jNjAxLTc2M2YtYWIyMS1lYWYwYTY0Y2JlYTEiLCJleHAiOjE3MTQzMDM2OTQsIm5iZiI6MTcxMzY5ODg5NCwiaWF0IjoxNzEzNjk4ODk0LCJqdGkiOiIwMThmMDA2OS1mNDViLTdhNDEtYmYxYS1lZjk3ZDdhMGU2NTUifQ.1O49b-GFEUiQ6-_L0FZe06ca34Q2HMNwH_1ebHl64L0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/products/018f0197-c840-7921-8038-6021d74f93ef",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"products",
+								"018f0197-c840-7921-8038-6021d74f93ef"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get products list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/products",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "Upload image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/congt/Downloads/beauty.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/{{Version}}/upload-image",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"{{Version}}",
+								"upload-image"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
