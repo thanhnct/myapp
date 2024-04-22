@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"myapp/common"
-	userDomain "myapp/module/user/domain"
+	"myapp/module/user/domain"
 	"time"
 )
 
@@ -26,7 +26,7 @@ func (uc *loginEmailPasswordUC) LoginEmailPassword(ctx context.Context, dto Emai
 	}
 
 	if ok := uc.hasher.CompareHashPassword(user.Password(), user.Salt(), dto.Password); !ok {
-		return nil, userDomain.ErrInvalidEmailPassword
+		return nil, domain.ErrInvalidEmailPassword
 	}
 
 	userId := user.Id()
@@ -44,7 +44,7 @@ func (uc *loginEmailPasswordUC) LoginEmailPassword(ctx context.Context, dto Emai
 	}
 	tokenExpAt := time.Now().UTC().Add(time.Duration(uc.tokenProvider.TokenExpireInSeconds()) * time.Second)
 	refreshExpAt := time.Now().UTC().Add(time.Duration(uc.tokenProvider.RefreshExpireInSeconds()) * time.Second)
-	session := userDomain.NewSession(sessionId, userId, refreshToken, tokenExpAt, refreshExpAt)
+	session := domain.NewSession(sessionId, userId, refreshToken, tokenExpAt, refreshExpAt)
 
 	//Save session to db
 	if err := uc.sessionRepo.Create(ctx, session); err != nil {

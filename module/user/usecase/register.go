@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"myapp/common"
-	userDomain "myapp/module/user/domain"
+	"myapp/module/user/domain"
 
 	"github.com/pkg/errors"
 	"github.com/viettranx/service-context/core"
@@ -29,7 +29,7 @@ func (uc *registerUC) Register(ctx context.Context, registerDto EmailPasswordReg
 	user, err := uc.userQueryRepo.FindByEmail(ctx, registerDto.Email)
 
 	if user != nil {
-		return core.ErrBadRequest.WithError(userDomain.ErrEmailHasExisted.Error())
+		return core.ErrBadRequest.WithError(domain.ErrEmailHasExisted.Error())
 	}
 
 	if err != nil && !errors.Is(err, common.ErrRecordNotFound) {
@@ -48,14 +48,14 @@ func (uc *registerUC) Register(ctx context.Context, registerDto EmailPasswordReg
 		return err
 	}
 
-	userEntity, err := userDomain.NewUser(
+	userEntity, err := domain.NewUser(
 		common.GenUUID(),
 		registerDto.FirstName,
 		registerDto.LastName,
 		registerDto.Email,
 		hashedPassword,
 		salt,
-		userDomain.RoleUser,
+		domain.RoleUser,
 		common.Activated,
 		"",
 	)

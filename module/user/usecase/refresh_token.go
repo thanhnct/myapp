@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"myapp/common"
-	userDomain "myapp/module/user/domain"
+	"myapp/module/user/domain"
 	"time"
 )
 
@@ -57,7 +57,7 @@ func (uc *refreshTokenUC) RefreshToken(ctx context.Context, refreshToken string)
 	tokenExpAt := time.Now().UTC().Add(time.Second * time.Duration(uc.tokenProvider.TokenExpireInSeconds()))
 	refreshExpAt := time.Now().UTC().Add(time.Second * time.Duration(uc.tokenProvider.RefreshExpireInSeconds()))
 
-	newSession := userDomain.NewSession(sessionId, userId, newRefreshToken, tokenExpAt, refreshExpAt)
+	newSession := domain.NewSession(sessionId, userId, newRefreshToken, tokenExpAt, refreshExpAt)
 
 	if err := uc.sessionCommandRepo.Create(ctx, newSession); err != nil {
 		return nil, err
